@@ -77,11 +77,29 @@ jobs:
           echo "Deployment package contents:"
           find deployment -maxdepth 3 -type f | sort
 
+      - name: Install build tools
+        working-directory: deployment
+        run: npm install --no-save --no-package-lock vite@8 vite-plugin-javascript-obfuscator@3
+
+      - name: Build project
+        working-directory: deployment
+        run: npx vite build --config vite.ci.config.mjs
+
+      - name: Move server files
+        working-directory: deployment
+        shell: bash
+        run: |
+          for file in server.js package.json; do
+            if [ -f "$file" ]; then
+              cp "$file" dist/
+            fi
+          done
+
       - name: Install Railway CLI
         run: npm install --global @railway/cli
 
       - name: Deploy to Railway
-        working-directory: deployment
+        working-directory: deployment/dist/
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --ci --no-gitignore --project ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service WebApp
+        run: railway up --ci --project ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service WebApp

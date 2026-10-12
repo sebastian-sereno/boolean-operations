@@ -1,9 +1,9 @@
-import type { Expr } from './ast.js';
-import { sameExpr } from './equality.js';
-import { defaultRules } from './rules/index.js';
-import type { RewriteRule, RewriteStep } from './rules/types.js';
-import { searchSimplify } from './search.js';
-import { type ExpressionCost, expressionWeight } from './weight.js';
+import type { Expr } from '@/ast.js';
+import { sameExpr } from '@/equality.js';
+import { defaultRules } from '@/rules/index.js';
+import type { RewriteRule, RewriteStep } from '@/rules/types.js';
+import { searchSimplify } from '@/search.js';
+import { type ExpressionCost, expressionWeight } from '@/weight.js';
 
 interface SingleRewrite {
   expression: Expr;

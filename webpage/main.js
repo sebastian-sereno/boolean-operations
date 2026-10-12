@@ -2,8 +2,6 @@ import { parse } from '../dist/logic/parser.js';
 import { printExpr } from '../dist/logic/printer.js';
 import { simplify } from '../dist/simplify.js';
 
-// import type { Expr } from "./logic/ast.js";
-
 /** @typedef {import('../dist/ast.js').Expr} Expr */
 /** @typedef {import('../dist/simplify.js').SimplifyOptions} SimplifyOptions */
 

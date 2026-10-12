@@ -1,4 +1,4 @@
-import type { Expr } from '../ast.js';
+import type { Expr } from '@/ast.js';
 
 export interface RewriteRule {
   id: string;

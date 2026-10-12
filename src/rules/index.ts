@@ -1,11 +1,11 @@
-import { absorption, conditionalAbsorption, negatedAndOrAbsorption } from './absorption.js';
-import { excludedMiddle, nonContradiction } from './complements.js';
-import { constantNegation, domination } from './constants.js';
-import { deMorganCompress, deMorganExpand } from './de-morgan.js';
-import { distributive, xor_distributive } from './distributive.js';
-import { idempotence, identity } from './identity.js';
-import { doubleNegation } from './negation.js';
-import { xorComplement, xorIdempotence, xorIdentity, xorNegation, xorRules } from './xor.js';
+import { absorption, conditionalAbsorption, negatedAndOrAbsorption } from '@/rules/absorption.js';
+import { excludedMiddle, nonContradiction } from '@/rules/complements.js';
+import { constantNegation, domination } from '@/rules/constants.js';
+import { deMorganCompress, deMorganExpand } from '@/rules/de-morgan.js';
+import { distributive, xor_distributive } from '@/rules/distributive.js';
+import { idempotence, identity } from '@/rules/identity.js';
+import { doubleNegation } from '@/rules/negation.js';
+import { xorComplement, xorIdempotence, xorIdentity, xorNegation, xorRules } from '@/rules/xor.js';
 
 export {
   absorption,

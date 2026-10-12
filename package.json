@@ -31,6 +31,7 @@
     "@types/node": "^26.6.2",
     "commitlint": "^21.2.1",
     "concurrently": "^10.0.6",
+    "cross-env": "^10.1.0",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "^2.2.1",
     "tsx": "^4.23.15",
@@ -58,7 +59,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "dev": "concurrently \"npm:dev:server\" \"npm:build:watch\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm:dev:server\" \"npm:build:watch\"",
     "dev:server": "node webpage/server.js",
     "prepublishOnly": "npm run typecheck && npm test && npm run build",
     "test": "vitest run",

@@ -1,6 +1,6 @@
-import type { Expr } from '../ast.js';
-import { sameExpr } from '../equality.js';
-import type { RewriteRule } from './types.js';
+import type { Expr } from '@/ast.js';
+import { sameExpr } from '@/equality.js';
+import type { RewriteRule } from '@/rules/types.js';
 
 const isConst = (expr: Expr, value: boolean): boolean =>
   expr.type === 'const' && expr.value === value;

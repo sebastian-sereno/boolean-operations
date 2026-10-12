@@ -1,4 +1,4 @@
-import type { Expr } from './ast.js';
+import type { Expr } from '@/ast.js';
 
 /**
  * Compares two expressions by their AST structure.

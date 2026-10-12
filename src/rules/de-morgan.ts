@@ -1,5 +1,5 @@
-import type { Expr } from '../ast.js';
-import type { RewriteRule } from './types.js';
+import type { Expr } from '@/ast.js';
+import type { RewriteRule } from '@/rules/types.js';
 
 export type DeMorganDirection = 'expand' | 'compress';
 

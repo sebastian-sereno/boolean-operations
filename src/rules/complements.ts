@@ -1,6 +1,6 @@
-import type { Expr } from '../ast.js';
-import { sameExpr as same } from '../equality.js';
-import type { RewriteRule } from './types.js';
+import type { Expr } from '@/ast.js';
+import { sameExpr as same } from '@/equality.js';
+import type { RewriteRule } from '@/rules/types.js';
 
 export const excludedMiddle: RewriteRule = {
   apply(expr) {

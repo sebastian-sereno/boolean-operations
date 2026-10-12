@@ -1,5 +1,4 @@
-import type { Expr } from '../ast.js';
-import { isConst, type RewriteRule } from './types.js';
+import { isConst, type RewriteRule } from '@/rules/types.js';
 
 export const domination: RewriteRule = {
   apply(expr) {

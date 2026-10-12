@@ -1,4 +1,4 @@
-import type { RewriteRule } from './types.js';
+import type { RewriteRule } from '@/rules/types.js';
 
 export const distributive: RewriteRule = {
   apply(expr) {

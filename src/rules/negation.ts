@@ -1,4 +1,4 @@
-import type { RewriteRule } from './types.js';
+import type { RewriteRule } from '@/rules/types.js';
 
 export const doubleNegation: RewriteRule = {
   apply(expr) {

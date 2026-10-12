@@ -9,6 +9,9 @@
 
     "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     "rootDir": "./src",
     "skipLibCheck": true,

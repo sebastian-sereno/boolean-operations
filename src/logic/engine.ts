@@ -1,7 +1,7 @@
-import type { Expr } from '../ast.js';
-import { sameExpr } from '../equality.js';
-import type { RewriteRule } from '../rules/types.js';
-import { expressionWeight } from '../weight.js';
+import type { Expr } from '@/ast.js';
+import { sameExpr } from '@/equality.js';
+import type { RewriteRule } from '@/rules/types.js';
+import { expressionWeight } from '@/weight.js';
 
 interface Candidate {
   expression: Expr;

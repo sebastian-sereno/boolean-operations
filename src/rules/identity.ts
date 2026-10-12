@@ -1,5 +1,5 @@
-import { sameExpr as same } from '../equality.js';
-import { isConst, type RewriteRule } from './types.js';
+import { sameExpr as same } from '@/equality.js';
+import { isConst, type RewriteRule } from '@/rules/types.js';
 
 export const idempotence: RewriteRule = {
   apply(expr) {

@@ -1,4 +1,4 @@
-import { createReadStream, statSync } from 'node:fs';
+import { createReadStream, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT_DIR = dirname(fileURLToPath(import.meta.url));
 const DIST_DIRS = [resolve(ROOT_DIR, './dist'), resolve(ROOT_DIR, '../dist')];
 const PORT = Number(process.env.PORT) || 3000;
+
+// Environment configuration
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 const CONTENT_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -21,6 +24,8 @@ const CONTENT_TYPES = {
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
 };
+
+const TEXT_EXTENSIONS = new Set(['.css', '.html', '.js', '.json', '.svg']);
 
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
@@ -58,11 +63,17 @@ function getFile(path) {
 
 function findFile(pathname) {
   const isDistRequest = pathname === '/dist' || pathname.startsWith('/dist/');
+
+  // Production must not expose files through /dist.
+  if (!IS_DEV && isDistRequest) return null;
+
   const requestedPath = isDistRequest ? pathname.slice('/dist'.length) : pathname;
+
   const directories = isDistRequest ? DIST_DIRS : [ROOT_DIR, ...DIST_DIRS];
 
   for (const directory of directories) {
     const filePath = resolve(directory, `.${requestedPath}`);
+
     if (!isWithinDirectory(directory, filePath)) continue;
 
     const file = getFile(filePath);
@@ -96,22 +107,43 @@ function handleRequest(req, res) {
   }
 
   if (HIDDEN_PATHS.has(pathname)) return sendNotFound(res);
+
   if (pathname === '/') pathname = '/index.html';
 
   const filePath = findFile(pathname);
   if (!filePath) return sendNotFound(res);
 
+  const ext = extname(filePath).toLowerCase();
+  const contentType = CONTENT_TYPES[ext] || 'application/octet-stream';
+
   res.writeHead(200, {
     ...SECURITY_HEADERS,
-    'Content-Type': CONTENT_TYPES[extname(filePath).toLowerCase()] || 'application/octet-stream',
+    'Content-Type': contentType,
   });
 
   if (req.method === 'HEAD') return res.end();
 
+  // In production, rewrite @/ to / in text-based files before sending.
+  if (IS_DEV && TEXT_EXTENSIONS.has(ext)) {
+    try {
+      const content = readFileSync(filePath, 'utf8');
+      return res.end(content.replace(/(^\s*import\b[^;\n]*?)@/gm, '$1'));
+    } catch (error) {
+      console.error('Failed to read file:', error);
+
+      if (res.headersSent) return res.destroy();
+
+      res.writeHead(500, SECURITY_HEADERS);
+      return res.end('Internal Server Error');
+    }
+  }
+
+  // Non-production, or binary files: stream the original file.
   const stream = createReadStream(filePath);
 
   stream.on('error', () => {
     if (res.headersSent) return res.destroy();
+
     res.writeHead(500, SECURITY_HEADERS);
     res.end('Internal Server Error');
   });
@@ -123,6 +155,7 @@ const server = createServer(handleRequest);
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server listening on http://0.0.0.0:${PORT}`);
+  console.log('Environment:', !IS_DEV ? 'production' : 'non-production');
   console.log('Root directory:', ROOT_DIR);
   console.log('Distribution directories:', DIST_DIRS);
 });
