@@ -1,11 +1,11 @@
 :root {
   font-family: Inter, system-ui, sans-serif;
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  line-height: 1.5;
   color: #e7eaf0;
   background: #10131a;
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  line-height: 1.5;
 }
 
 * {
@@ -13,14 +13,14 @@
 }
 
 body {
-  margin: 0;
   min-width: 320px;
+  margin: 0;
 }
 
 .workbench {
   width: min(100% - 32px, 960px);
-  margin: 0 auto;
   padding: 40px 0;
+  margin: 0 auto;
 }
 
 .page-header {
@@ -42,9 +42,9 @@ body {
 .panel {
   padding: 24px;
   margin-bottom: 20px;
+  background: #191e28;
   border: 1px solid #303744;
   border-radius: 14px;
-  background: #191e28;
 }
 
 .panel h2 {
@@ -61,14 +61,14 @@ label {
 textarea {
   display: block;
   width: 100%;
-  resize: vertical;
   padding: 14px;
-  border: 1px solid #414b5d;
-  border-radius: 8px;
-  background: #10131a;
-  color: inherit;
   font: inherit;
   font-family: ui-monospace, monospace;
+  color: inherit;
+  resize: vertical;
+  background: #10131a;
+  border: 1px solid #414b5d;
+  border-radius: 8px;
 }
 
 textarea:focus {
@@ -85,12 +85,12 @@ textarea:focus {
 
 button {
   padding: 11px 18px;
+  font-weight: 700;
+  color: #10131a;
+  cursor: pointer;
+  background: #9ba7ff;
   border: 0;
   border-radius: 8px;
-  background: #9ba7ff;
-  color: #10131a;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 button:hover {
@@ -98,20 +98,22 @@ button:hover {
 }
 
 button.secondary {
-  border: 1px solid #414b5d;
-  background: transparent;
   color: #e7eaf0;
+  background: transparent;
+  border: 1px solid #414b5d;
 }
 
 .expression {
-  margin: 0;
   padding: 14px;
+  margin: 0;
+  font:
+    1rem / 1.7 ui-monospace,
+    monospace;
+  color: #b9c5ff;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  border-radius: 8px;
   background: #10131a;
-  color: #b9c5ff;
-  font: 1rem/1.7 ui-monospace, monospace;
+  border-radius: 8px;
 }
 
 .error {
@@ -125,8 +127,8 @@ button.secondary {
 .step-rule {
   display: block;
   margin-bottom: 4px;
-  color: #9ba7ff;
   font-weight: 700;
+  color: #9ba7ff;
 }
 
 @media (max-width: 600px) {
@@ -138,8 +140,6 @@ button.secondary {
     padding: 16px;
   }
 }
-
-
 
 .tree {
   --tree-bg: #111620;
@@ -159,14 +159,13 @@ button.secondary {
   min-height: 160px;
   padding: 32px 24px;
   overflow: auto;
-  border: 1px solid #2d3748;
-  border-radius: 12px;
-  background:
-    radial-gradient(circle, #303b50 1px, transparent 1.2px);
+  scrollbar-color: #46516a transparent;
+  scrollbar-width: thin;
+  background: radial-gradient(circle, #303b50 1px, transparent 1.2px);
   background-color: var(--tree-bg);
   background-size: 22px 22px;
-  scrollbar-width: thin;
-  scrollbar-color: #46516a transparent;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
 }
 
 /* Root node and all nested branches */
@@ -174,9 +173,9 @@ button.secondary {
 .tree-branch {
   position: relative;
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   align-items: center;
-  flex: 0 0 auto;
   width: max-content;
   min-width: 48px;
   padding: 0;
@@ -194,16 +193,16 @@ button.secondary {
   min-height: 42px;
   padding: 9px 16px;
 
-  border: 1px solid var(--node-border);
-  border-radius: 10px;
-  background: linear-gradient(145deg, #252e3e, var(--node-bg));
-  color: var(--tree-text);
-
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 14px;
   font-weight: 650;
+  color: var(--tree-text);
   letter-spacing: 0.02em;
   white-space: nowrap;
+  background: linear-gradient(145deg, #252e3e, var(--node-bg));
+
+  border: 1px solid var(--node-border);
+  border-radius: 10px;
 
   box-shadow:
     0 3px 8px rgb(0 0 0 / 18%),
@@ -219,9 +218,9 @@ button.secondary {
 /* Boolean operators */
 
 .tree-node.operator {
-  border-color: var(--operator-border);
-  background: linear-gradient(145deg, #303b61, var(--operator-bg));
   color: var(--operator-color);
+  background: linear-gradient(145deg, #303b61, var(--operator-bg));
+  border-color: var(--operator-border);
   box-shadow:
     0 3px 12px rgb(94 111 255 / 12%),
     inset 0 1px rgb(255 255 255 / 7%);
@@ -230,9 +229,9 @@ button.secondary {
 /* Variables and constants */
 
 .tree-node:not(.operator) {
-  border-color: var(--variable-border);
-  background: linear-gradient(145deg, #20483e, var(--variable-bg));
   color: var(--variable-color);
+  background: linear-gradient(145deg, #20483e, var(--variable-bg));
+  border-color: var(--variable-border);
 }
 
 /* Child node layout */
@@ -240,20 +239,20 @@ button.secondary {
 .tree-children {
   position: relative;
   display: flex;
+  gap: 32px;
   align-items: flex-start;
   justify-content: center;
-  gap: 32px;
   padding-top: 34px;
 }
 
 /* Vertical connector from parent to child row */
 
 .tree-branch > .tree-children::before {
-  content: "";
   position: absolute;
   top: 0;
   left: 50%;
   height: 17px;
+  content: "";
   border-left: 1.5px solid var(--connector);
   transform: translateX(-50%);
 }
@@ -261,48 +260,44 @@ button.secondary {
 /* Vertical connector from the child row to each child */
 
 .tree-children > .tree-branch::before {
-  content: "";
   position: absolute;
   top: -17px;
   left: 50%;
   height: 17px;
+  content: "";
   border-left: 1.5px solid var(--connector);
 }
 
 /* Horizontal bar joining sibling branches */
 
 .tree-children:has(> .tree-branch:nth-child(2))::after {
-  content: "";
   position: absolute;
   top: 16px;
   left: calc(50% - 1px);
   width: 0;
   height: 0;
+  content: "";
 }
 
 /* Draw horizontal connectors between two or more children */
 
-.tree-children:has(> .tree-branch:nth-child(2))
-  > .tree-branch:first-child::after,
-.tree-children:has(> .tree-branch:nth-child(2))
-  > .tree-branch:last-child::after {
-  content: "";
+.tree-children:has(> .tree-branch:nth-child(2)) > .tree-branch:first-child::after,
+.tree-children:has(> .tree-branch:nth-child(2)) > .tree-branch:last-child::after {
   position: absolute;
   top: -18px;
   height: 1.5px;
+  content: "";
   background: var(--connector);
 }
 
-.tree-children:has(> .tree-branch:nth-child(2))
-  > .tree-branch:first-child::after {
-  left: 50%;
+.tree-children:has(> .tree-branch:nth-child(2)) > .tree-branch:first-child::after {
   right: -16px;
+  left: 50%;
 }
 
-.tree-children:has(> .tree-branch:nth-child(2))
-  > .tree-branch:last-child::after {
-  left: -16px;
+.tree-children:has(> .tree-branch:nth-child(2)) > .tree-branch:last-child::after {
   right: 50%;
+  left: -16px;
 }
 
 /* NOT is a unary operator, so don't draw a sibling bar */
@@ -315,8 +310,8 @@ button.secondary {
 
 .tree-node:hover {
   border-color: #a5b0ff;
-  transform: translateY(-2px);
   box-shadow: 0 6px 16px rgb(0 0 0 / 22%);
+  transform: translateY(-2px);
 }
 
 .tree-node.operator:hover {
@@ -356,12 +351,11 @@ button.secondary {
   }
 }
 
-
 .structure-header {
   display: flex;
+  gap: 16px;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
   margin-bottom: 22px;
 }
 
@@ -376,36 +370,37 @@ button.secondary {
 .status-pill {
   flex-shrink: 0;
   padding: 5px 10px;
-  border: 1px solid #3b475c;
-  border-radius: 999px;
-  background: #202838;
-  color: #b9c5ff;
   font-size: 12px;
   font-weight: 700;
+  color: #b9c5ff;
+  background: #202838;
+  border: 1px solid #3b475c;
+  border-radius: 999px;
 }
 
 .expression-comparison {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
-  align-items: stretch;
+  /* grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr); */
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  align-items: stretch;
 }
 
 .expression-side {
   min-width: 0;
   overflow: hidden;
+  background: #111620;
   border: 1px solid #303b50;
   border-radius: 12px;
-  background: #111620;
 }
 
 .side-heading {
   display: flex;
-  align-items: center;
   gap: 9px;
+  align-items: center;
   padding: 14px 16px;
-  border-bottom: 1px solid #303b50;
   background: #191e28;
+  border-bottom: 1px solid #303b50;
 }
 
 .side-heading h3 {
@@ -434,33 +429,31 @@ button.secondary {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8190ff;
   font-size: 24px;
+  color: #8190ff;
+  
+  transform: rotate(90deg);
 }
 
 .animation-tree {
-  min-height: 220px;
-  height: 100%;
-  padding: 26px 18px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  height: 100%;
+  min-height: 220px;
+  padding: 26px 18px;
   overflow: auto;
+  background-color: #111620;
+  background-image: radial-gradient(circle, #303b50 1px, transparent 1.2px);
+  background-size: 20px 20px;
   border: 0;
   border-radius: 0;
-  background-color: #111620;
-  background-image: radial-gradient(
-    circle,
-    #303b50 1px,
-    transparent 1.2px
-  );
-  background-size: 20px 20px;
 }
 
 /* Animate only the start side */
 
 #start-tree .tree-branch {
-  animation: tree-enter 350ms cubic-bezier(.2, .8, .2, 1) both;
+  animation: tree-enter 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 #start-tree .tree-node {
@@ -472,9 +465,11 @@ button.secondary {
 }
 
 #start-tree .tree-node.is-changing {
-  border-color: #a5b0ff;
   background: #394773;
-  box-shadow: 0 0 0 4px #8190ff22, 0 0 22px #8190ff22;
+  border-color: #a5b0ff;
+  box-shadow:
+    0 0 0 4px #8190ff22,
+    0 0 22px #8190ff22;
   transform: scale(1.06);
 }
 
@@ -487,25 +482,25 @@ button.secondary {
 
 #end-tree .tree-branch,
 #end-tree .tree-node {
-  animation: none !important;
-  transition: none !important;
   transform: none !important;
+  transition: none !important;
+  animation: none !important;
 }
 
 #end-tree .tree-node.operator {
-  border-color: #4c9f80;
-  background: linear-gradient(145deg, #20483e, #18352f);
   color: #9ce8cf;
+  background: linear-gradient(145deg, #20483e, #18352f);
+  border-color: #4c9f80;
 }
 
 /* Playback controls */
 
 .playback-panel {
-  margin-top: 16px;
   padding: 18px;
+  margin-bottom: 16px;
+  background: #141923;
   border: 1px solid #303744;
   border-radius: 12px;
-  background: #141923;
 }
 
 .playback-rule {
@@ -518,18 +513,18 @@ button.secondary {
   margin: 0;
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
 }
 
 .playback-rule strong {
-  color: #c5ccff;
   font-size: 15px;
+  color: #c5ccff;
 }
 
 .playback-rule p {
   margin: 0;
-  color: #9ba5b5;
   font-size: 13px;
+  color: #9ba5b5;
   overflow-wrap: anywhere;
 }
 
@@ -537,30 +532,30 @@ button.secondary {
   display: grid;
   gap: 9px;
   margin-bottom: 18px;
-  color: #9ba5b5;
   font-size: 12px;
+  color: #9ba5b5;
 }
 
 .progress-track {
   height: 5px;
   overflow: hidden;
-  border-radius: 99px;
   background: #303744;
+  border-radius: 99px;
 }
 
 .progress-fill {
   width: 0;
   height: 100%;
-  border-radius: inherit;
   background: linear-gradient(90deg, #8190ff, #5dd6a3);
+  border-radius: inherit;
   transition: width 250ms ease;
 }
 
 .playback-controls {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  align-items: center;
 }
 
 .playback-controls button {
@@ -568,8 +563,8 @@ button.secondary {
 }
 
 .playback-controls button:disabled {
-  opacity: .35;
   cursor: not-allowed;
+  opacity: 0.35;
   filter: none;
 }
 
@@ -579,21 +574,21 @@ button.secondary {
 
 .speed-control {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   margin-left: auto;
-  color: #9ba5b5;
   font-size: 12px;
+  color: #9ba5b5;
 }
 
 .speed-control select {
   max-width: 110px;
   padding: 8px;
+  font: inherit;
+  color: #e7eaf0;
+  background: #10131a;
   border: 1px solid #414b5d;
   border-radius: 7px;
-  background: #10131a;
-  color: #e7eaf0;
-  font: inherit;
 }
 
 /* Tree entrance animation */
@@ -601,7 +596,7 @@ button.secondary {
 @keyframes tree-enter {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(.98);
+    transform: translateY(8px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -633,7 +628,7 @@ button.secondary {
   #start-tree .tree-branch,
   #start-tree .tree-node,
   .progress-fill {
-    animation: none !important;
     transition: none !important;
+    animation: none !important;
   }
 }

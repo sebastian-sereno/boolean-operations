@@ -76,9 +76,38 @@ export const distributive: RewriteRule = {
 
     return null;
   },
-  cost: 8,
+  cost: 32,
   description:
     'A AND (B OR C) = (A AND B) OR (A AND C); ' + 'A OR (B AND C) = (A OR B) AND (A OR C)',
   id: 'distributive',
   name: 'Distributive Laws',
+};
+
+export const xor_distributive: RewriteRule = {
+  apply(expr) {
+    // A XOR B -> (A OR B) AND NOT (A AND B)
+    if (expr.type === 'xor') {
+      return {
+        left: {
+          left: expr.left,
+          right: expr.right,
+          type: 'or',
+        },
+        right: {
+          operand: {
+            left: expr.left,
+            right: expr.right,
+            type: 'and',
+          },
+          type: 'not',
+        },
+        type: 'and',
+      };
+    }
+    return null;
+  },
+  cost: 16,
+  description: 'A XOR B = (A OR B) AND NOT (A AND B)',
+  id: 'xor-distributive',
+  name: 'XOR Distributive Laws',
 };

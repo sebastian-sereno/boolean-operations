@@ -5,6 +5,7 @@ import { simplify } from '../dist/simplify.js';
 // import type { Expr } from "./logic/ast.js";
 
 /** @typedef {import('../dist/ast.js').Expr} Expr */
+/** @typedef {import('../dist/simplify.js').SimplifyOptions} SimplifyOptions */
 
 /** @type { HTMLTextAreaElement } */
 const input = document.querySelector('#expression');
@@ -20,6 +21,8 @@ const error = document.querySelector('#error');
 
 /** @type { HTMLButtonElement } */
 const simplifyButton = document.querySelector('#simplify-button');
+/** @type { HTMLButtonElement } */
+const simplifySBSButton = document.querySelector('#simplify-sbs-button');
 /** @type { HTMLButtonElement } */
 const resetButton = document.querySelector('#reset-button');
 
@@ -180,8 +183,8 @@ function playNext() {
     return;
   }
 
-  stepIndex++;
   renderPlayback();
+  stepIndex++;
 
   // Keep the Play button in its pause state while running.
   playButton.textContent = 'Ⅱ Pause';
@@ -252,7 +255,10 @@ function renderHistory() {
   });
 }
 
-function runSimplifier() {
+/**
+ * @param {SimplifyOptions} options
+ */
+function runSimplifier(options = { beamWidth: 1, strategy: 'lookahead' }) {
   stopPlayback();
   runId++;
 
@@ -262,7 +268,7 @@ function runSimplifier() {
   try {
     originalExpression = parse(input.value);
 
-    const output = simplify(originalExpression);
+    const output = simplify(originalExpression, options);
 
     finalExpression = output.expression;
     steps = output.steps;
@@ -319,7 +325,10 @@ speedSelect.addEventListener('change', () => {
   }
 });
 
-simplifyButton.addEventListener('click', runSimplifier);
+simplifyButton.addEventListener('click', () => runSimplifier());
+simplifySBSButton.addEventListener('click', () =>
+  runSimplifier({ beamWidth: 3, strategy: 'lookahead' }),
+);
 
 resetButton.addEventListener('click', () => {
   stopPlayback();

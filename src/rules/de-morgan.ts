@@ -46,7 +46,7 @@ export function createDeMorganRule(direction: DeMorganDirection): RewriteRule {
 
       return null;
     },
-    cost: 4,
+    cost: direction === 'expand' ? 16 : 4,
     description: `De Morgan transformation (${direction})`,
     id: `de-morgan-${direction}`,
     name: "De Morgan's Laws",
