@@ -1,61 +1,88 @@
 import { createReadStream, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import {
-  dirname as _dirname,
-  relative as _relative,
-  extname,
-  isAbsolute,
-  resolve,
-  sep,
-} from 'node:path';
+import { dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = _dirname(__filename);
+const ROOT_DIR = dirname(fileURLToPath(import.meta.url));
+const DIST_DIRS = [resolve(ROOT_DIR, './dist'), resolve(ROOT_DIR, '../dist')];
+const PORT = Number(process.env.PORT) || 3000;
 
-const ROOT_DIR = __dirname;
-const DIST_DIR = resolve(__dirname, '../dist');
-
-const contentTypes = {
+const CONTENT_TYPES = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
   '.ico': 'image/x-icon',
+  '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
+  '.json': 'application/json',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
 };
 
-function findFile(filePath) {
-  const dirs = filePath.startsWith('/dist') ? [DIST_DIR] : [ROOT_DIR, DIST_DIR];
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+};
 
-  for (const dir of dirs) {
-    const adjustedPath = filePath.startsWith('/dist') ? filePath.slice('/dist'.length) : filePath;
+const NOT_FOUND_HEADERS = {
+  ...SECURITY_HEADERS,
+  'Content-Type': 'text/plain; charset=utf-8',
+  'X-Robots-Tag': 'noindex, nofollow',
+};
 
-    const fullPath = resolve(dir, '.' + adjustedPath);
-    const relative = _relative(dir, fullPath);
+const HIDDEN_PATHS = new Set(['/server.js', '/package.json']);
 
-    // Prevent access outside either directory.
-    if (relative === '..' || relative.startsWith('..' + sep) || isAbsolute(relative)) {
-      continue;
+function isWithinDirectory(directory, filePath) {
+  const path = relative(directory, filePath);
+
+  return path === '' || (path !== '..' && !path.startsWith(`..${sep}`) && !isAbsolute(path));
+}
+
+function getFile(path) {
+  try {
+    let filePath = path;
+    let stats = statSync(filePath);
+
+    if (stats.isDirectory()) {
+      filePath = resolve(filePath, 'index.html');
+      stats = statSync(filePath);
     }
 
-    try {
-      if (statSync(fullPath).isFile()) {
-        return fullPath;
-      }
-    } catch {
-      // File doesn't exist here; try the next directory.
-    }
+    return stats.isFile() ? filePath : null;
+  } catch {
+    return null;
+  }
+}
+
+function findFile(pathname) {
+  const isDistRequest = pathname === '/dist' || pathname.startsWith('/dist/');
+  const requestedPath = isDistRequest ? pathname.slice('/dist'.length) : pathname;
+  const directories = isDistRequest ? DIST_DIRS : [ROOT_DIR, ...DIST_DIRS];
+
+  for (const directory of directories) {
+    const filePath = resolve(directory, `.${requestedPath}`);
+    if (!isWithinDirectory(directory, filePath)) continue;
+
+    const file = getFile(filePath);
+    if (file) return file;
   }
 
   return null;
 }
 
-const server = createServer((req, res) => {
+function sendNotFound(res) {
+  res.writeHead(404, NOT_FOUND_HEADERS);
+  res.end('404 - File Not Found');
+}
+
+function handleRequest(req, res) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
-    res.writeHead(405, { Allow: 'GET, HEAD' });
+    res.writeHead(405, {
+      ...SECURITY_HEADERS,
+      Allow: 'GET, HEAD',
+    });
     return res.end('Method Not Allowed');
   }
 
@@ -64,39 +91,43 @@ const server = createServer((req, res) => {
   try {
     pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
   } catch {
-    res.writeHead(400);
+    res.writeHead(400, SECURITY_HEADERS);
     return res.end('Bad Request');
   }
 
+  if (HIDDEN_PATHS.has(pathname)) return sendNotFound(res);
   if (pathname === '/') pathname = '/index.html';
 
   const filePath = findFile(pathname);
-
-  if (!filePath) {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    return res.end('404 - File Not Found');
-  }
-
-  const contentType = contentTypes[extname(filePath).toLowerCase()] || 'application/octet-stream';
-
-  const stream = createReadStream(filePath);
+  if (!filePath) return sendNotFound(res);
 
   res.writeHead(200, {
-    'Content-Type': contentType,
-    'X-Content-Type-Options': 'nosniff',
+    ...SECURITY_HEADERS,
+    'Content-Type': CONTENT_TYPES[extname(filePath).toLowerCase()] || 'application/octet-stream',
   });
 
   if (req.method === 'HEAD') return res.end();
 
+  const stream = createReadStream(filePath);
+
   stream.on('error', () => {
-    if (!res.headersSent) res.writeHead(500);
+    if (res.headersSent) return res.destroy();
+    res.writeHead(500, SECURITY_HEADERS);
     res.end('Internal Server Error');
   });
 
   stream.pipe(res);
+}
+
+const server = createServer(handleRequest);
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on http://0.0.0.0:${PORT}`);
+  console.log('Root directory:', ROOT_DIR);
+  console.log('Distribution directories:', DIST_DIRS);
 });
 
-server.listen(3000, '127.0.0.1', () => {
-  console.log('Serving at http://localhost:3000');
-  console.log('Search order:', ROOT_DIR, 'then', DIST_DIR);
+server.on('error', (error) => {
+  console.error('Server failed to start:', error);
+  process.exitCode = 1;
 });

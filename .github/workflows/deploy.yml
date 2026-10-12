@@ -84,4 +84,4 @@ jobs:
         working-directory: deployment
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --ci --project ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service WebApp
+        run: railway up --ci --no-gitignore --project ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service WebApp
