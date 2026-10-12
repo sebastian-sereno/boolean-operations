@@ -78,7 +78,7 @@ jobs:
           find deployment -maxdepth 3 -type f | sort
 
       - name: Install Railway CLI
-        run: yarn add --global @railway/cli
+        run: npm install --global @railway/cli
 
       - name: Deploy to Railway
         working-directory: deployment

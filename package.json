@@ -59,7 +59,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "dev": "concurrently \"npm:dev:server\" \"npm:build:watch\"",
-    "dev:server": "node example/server.js",
+    "dev:server": "node webpage/server.js",
     "prepublishOnly": "npm run typecheck && npm test && npm run build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

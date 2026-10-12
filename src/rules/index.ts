@@ -1,4 +1,4 @@
-import { absorption } from './absorption.js';
+import { absorption, conditionalAbsorption, negatedAndOrAbsorption } from './absorption.js';
 import { excludedMiddle, nonContradiction } from './complements.js';
 import { constantNegation, domination } from './constants.js';
 import { deMorganCompress, deMorganExpand } from './de-morgan.js';
@@ -9,6 +9,7 @@ import { xorComplement, xorIdempotence, xorIdentity, xorNegation, xorRules } fro
 
 export {
   absorption,
+  conditionalAbsorption,
   constantNegation,
   deMorganCompress,
   deMorganExpand,
@@ -18,6 +19,7 @@ export {
   excludedMiddle,
   idempotence,
   identity,
+  negatedAndOrAbsorption,
   nonContradiction,
   xor_distributive,
   xorComplement,
@@ -28,16 +30,18 @@ export {
 
 export const simplificationRules = [
   identity,
+  distributive,
   domination,
   constantNegation,
   doubleNegation,
   idempotence,
   absorption,
+  conditionalAbsorption,
+  negatedAndOrAbsorption,
   excludedMiddle,
   nonContradiction,
   deMorganCompress,
   xor_distributive,
-  distributive,
   ...xorRules,
 ];
 

@@ -18,7 +18,7 @@ export interface SimplifyResult {
   explored: number;
 }
 
-export type SimplifyStrategy = 'fast' | 'step-by-step' | 'lookahead';
+export type SimplifyStrategy = 'slow' | 'step-by-step' | 'lookahead';
 
 export interface SimplifyOptions {
   maxStates?: number;
@@ -29,7 +29,13 @@ export interface SimplifyOptions {
   beamWidth?: number;
 }
 
-export function simplify(expr: Expr, options: SimplifyOptions = {}): SimplifyResult {
+export function simplify(
+  expr: Expr,
+  options: SimplifyOptions = {
+    beamWidth: 1,
+    strategy: 'lookahead',
+  },
+): SimplifyResult {
   const { rules = defaultRules } = options;
 
   if (options.strategy === 'step-by-step') {

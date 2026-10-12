@@ -69,3 +69,24 @@ export const absorption: RewriteRule = {
   id: 'absorption',
   name: 'Absorption Laws',
 };
+
+export const negatedAndOrAbsorption: RewriteRule = {
+  apply(expr: Expr): Expr | null {
+    if (expr.type !== 'or') return null;
+
+    const matches = (negated: Expr, other: Expr): boolean =>
+      negated.type === 'not' &&
+      negated.operand.type === 'and' &&
+      (same(negated.operand.left, other) || same(negated.operand.right, other));
+
+    if (matches(expr.left, expr.right) || matches(expr.right, expr.left)) {
+      return { type: 'const', value: true };
+    }
+
+    return null;
+  },
+  cost: 1,
+  description: 'NOT (A AND B) OR B = TRUE',
+  id: 'negated-and-or-absorption',
+  name: 'Negated AND/OR Absorption',
+};
