@@ -1,0 +1,639 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #e7eaf0;
+  background: #10131a;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.workbench {
+  width: min(100% - 32px, 960px);
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.page-header p,
+.hint,
+.empty-state {
+  color: #9ba5b5;
+}
+
+.panel {
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #303744;
+  border-radius: 14px;
+  background: #191e28;
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  padding: 14px;
+  border: 1px solid #414b5d;
+  border-radius: 8px;
+  background: #10131a;
+  color: inherit;
+  font: inherit;
+  font-family: ui-monospace, monospace;
+}
+
+textarea:focus {
+  outline: 2px solid #7c8cff;
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+button {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #9ba7ff;
+  color: #10131a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button.secondary {
+  border: 1px solid #414b5d;
+  background: transparent;
+  color: #e7eaf0;
+}
+
+.expression {
+  margin: 0;
+  padding: 14px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  border-radius: 8px;
+  background: #10131a;
+  color: #b9c5ff;
+  font: 1rem/1.7 ui-monospace, monospace;
+}
+
+.error {
+  color: #ff9292;
+}
+
+#history li {
+  margin: 12px 0;
+}
+
+.step-rule {
+  display: block;
+  margin-bottom: 4px;
+  color: #9ba7ff;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .workbench {
+    padding-top: 24px;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+}
+
+
+
+.tree {
+  --tree-bg: #111620;
+  --node-bg: #202838;
+  --node-border: #3b475c;
+  --operator-bg: #252d49;
+  --operator-border: #8190ff;
+  --operator-color: #c5ccff;
+  --variable-bg: #18352f;
+  --variable-border: #3a8f76;
+  --variable-color: #9ce8cf;
+  --connector: #536079;
+  --tree-text: #e7eaf0;
+
+  display: block;
+  width: 100%;
+  min-height: 160px;
+  padding: 32px 24px;
+  overflow: auto;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle, #303b50 1px, transparent 1.2px);
+  background-color: var(--tree-bg);
+  background-size: 22px 22px;
+  scrollbar-width: thin;
+  scrollbar-color: #46516a transparent;
+}
+
+/* Root node and all nested branches */
+
+.tree-branch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: max-content;
+  min-width: 48px;
+  padding: 0;
+}
+
+/* Node appearance */
+
+.tree-node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 42px;
+  padding: 9px 16px;
+
+  border: 1px solid var(--node-border);
+  border-radius: 10px;
+  background: linear-gradient(145deg, #252e3e, var(--node-bg));
+  color: var(--tree-text);
+
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  box-shadow:
+    0 3px 8px rgb(0 0 0 / 18%),
+    inset 0 1px rgb(255 255 255 / 4%);
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* Boolean operators */
+
+.tree-node.operator {
+  border-color: var(--operator-border);
+  background: linear-gradient(145deg, #303b61, var(--operator-bg));
+  color: var(--operator-color);
+  box-shadow:
+    0 3px 12px rgb(94 111 255 / 12%),
+    inset 0 1px rgb(255 255 255 / 7%);
+}
+
+/* Variables and constants */
+
+.tree-node:not(.operator) {
+  border-color: var(--variable-border);
+  background: linear-gradient(145deg, #20483e, var(--variable-bg));
+  color: var(--variable-color);
+}
+
+/* Child node layout */
+
+.tree-children {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+  padding-top: 34px;
+}
+
+/* Vertical connector from parent to child row */
+
+.tree-branch > .tree-children::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 17px;
+  border-left: 1.5px solid var(--connector);
+  transform: translateX(-50%);
+}
+
+/* Vertical connector from the child row to each child */
+
+.tree-children > .tree-branch::before {
+  content: "";
+  position: absolute;
+  top: -17px;
+  left: 50%;
+  height: 17px;
+  border-left: 1.5px solid var(--connector);
+}
+
+/* Horizontal bar joining sibling branches */
+
+.tree-children:has(> .tree-branch:nth-child(2))::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: calc(50% - 1px);
+  width: 0;
+  height: 0;
+}
+
+/* Draw horizontal connectors between two or more children */
+
+.tree-children:has(> .tree-branch:nth-child(2))
+  > .tree-branch:first-child::after,
+.tree-children:has(> .tree-branch:nth-child(2))
+  > .tree-branch:last-child::after {
+  content: "";
+  position: absolute;
+  top: -18px;
+  height: 1.5px;
+  background: var(--connector);
+}
+
+.tree-children:has(> .tree-branch:nth-child(2))
+  > .tree-branch:first-child::after {
+  left: 50%;
+  right: -16px;
+}
+
+.tree-children:has(> .tree-branch:nth-child(2))
+  > .tree-branch:last-child::after {
+  left: -16px;
+  right: 50%;
+}
+
+/* NOT is a unary operator, so don't draw a sibling bar */
+
+.tree-children:not(:has(> .tree-branch:nth-child(2))) {
+  gap: 0;
+}
+
+/* Hover feedback */
+
+.tree-node:hover {
+  border-color: #a5b0ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 22%);
+}
+
+.tree-node.operator:hover {
+  background: linear-gradient(145deg, #394773, #292f50);
+}
+
+/* Keyboard accessibility if nodes become interactive later */
+
+.tree-node:focus-visible {
+  outline: 2px solid #a5b0ff;
+  outline-offset: 4px;
+}
+
+/* Small screens */
+
+@media (max-width: 600px) {
+  .tree {
+    padding: 28px 18px;
+  }
+
+  .tree-children {
+    gap: 22px;
+    padding-top: 30px;
+  }
+
+  .tree-node {
+    min-width: 44px;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-node {
+    transition: none;
+  }
+}
+
+
+.structure-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.structure-header h2 {
+  margin-bottom: 6px;
+}
+
+.structure-header p {
+  margin: 0;
+}
+
+.status-pill {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 1px solid #3b475c;
+  border-radius: 999px;
+  background: #202838;
+  color: #b9c5ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.expression-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+}
+
+.expression-side {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #303b50;
+  border-radius: 12px;
+  background: #111620;
+}
+
+.side-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #303b50;
+  background: #191e28;
+}
+
+.side-heading h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.side-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.start-indicator {
+  background: #9ba7ff;
+  box-shadow: 0 0 12px #7c8cff66;
+}
+
+.end-indicator {
+  background: #5dd6a3;
+  box-shadow: 0 0 12px #5dd6a366;
+}
+
+.comparison-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8190ff;
+  font-size: 24px;
+}
+
+.animation-tree {
+  min-height: 220px;
+  height: 100%;
+  padding: 26px 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  background-color: #111620;
+  background-image: radial-gradient(
+    circle,
+    #303b50 1px,
+    transparent 1.2px
+  );
+  background-size: 20px 20px;
+}
+
+/* Animate only the start side */
+
+#start-tree .tree-branch {
+  animation: tree-enter 350ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+#start-tree .tree-node {
+  transition:
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+#start-tree .tree-node.is-changing {
+  border-color: #a5b0ff;
+  background: #394773;
+  box-shadow: 0 0 0 4px #8190ff22, 0 0 22px #8190ff22;
+  transform: scale(1.06);
+}
+
+#start-tree .tree-node.is-settled {
+  border-color: #5dd6a3;
+  box-shadow: 0 0 0 3px #5dd6a31a;
+}
+
+/* Keep the final tree visually stable */
+
+#end-tree .tree-branch,
+#end-tree .tree-node {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+#end-tree .tree-node.operator {
+  border-color: #4c9f80;
+  background: linear-gradient(145deg, #20483e, #18352f);
+  color: #9ce8cf;
+}
+
+/* Playback controls */
+
+.playback-panel {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid #303744;
+  border-radius: 12px;
+  background: #141923;
+}
+
+.playback-rule {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.playback-rule .hint {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.playback-rule strong {
+  color: #c5ccff;
+  font-size: 15px;
+}
+
+.playback-rule p {
+  margin: 0;
+  color: #9ba5b5;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.playback-progress {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 18px;
+  color: #9ba5b5;
+  font-size: 12px;
+}
+
+.progress-track {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #303744;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8190ff, #5dd6a3);
+  transition: width 250ms ease;
+}
+
+.playback-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.playback-controls button {
+  min-height: 40px;
+}
+
+.playback-controls button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  filter: none;
+}
+
+#play-button {
+  min-width: 100px;
+}
+
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: #9ba5b5;
+  font-size: 12px;
+}
+
+.speed-control select {
+  max-width: 110px;
+  padding: 8px;
+  border: 1px solid #414b5d;
+  border-radius: 7px;
+  background: #10131a;
+  color: #e7eaf0;
+  font: inherit;
+}
+
+/* Tree entrance animation */
+
+@keyframes tree-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 700px) {
+  .expression-comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .comparison-divider {
+    height: 28px;
+    transform: rotate(90deg);
+  }
+
+  .animation-tree {
+    min-height: 160px;
+  }
+
+  .speed-control {
+    width: 100%;
+    margin: 4px 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #start-tree .tree-branch,
+  #start-tree .tree-node,
+  .progress-fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}

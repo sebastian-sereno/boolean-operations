@@ -1,0 +1,137 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="A visual Boolean logic workbench for rewriting and simplifying logical expressions."
+  />
+  <title>Logic Workbench</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="workbench">
+    <header class="page-header">
+      <h1>Logic Workbench</h1>
+      <p>Write, transform, and simplify Boolean expressions.</p>
+    </header>
+
+    <section class="panel">
+      <label for="expression">Logical expression</label>
+      <textarea
+        id="expression"
+        rows="3"
+        spellcheck="false"
+        placeholder="NOT (A AND B)"
+      >NOT NOT A AND ( B OR FALSE ) OR ( A AND FALSE )</textarea>
+
+      <div class="actions">
+        <button id="simplify-button" type="button">
+          Simplify
+        </button>
+        <button id="reset-button" class="secondary" type="button">
+          Reset
+        </button>
+      </div>
+
+      <p class="hint">
+        Operators: NOT, AND, OR, XOR. Parentheses are supported.
+      </p>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+
+    <section class="panel">
+      <h2>Result</h2>
+      <pre id="result" class="expression">Your result will appear here.</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Transformation history</h2>
+      <ol id="history">
+        <li class="empty-state">
+          Apply a rule to see its transformation steps.
+        </li>
+      </ol>
+    </section>
+    <section class="panel">
+      <div class="structure-header">
+        <div>
+          <h2>Expression structure</h2>
+          <p class="hint">Follow each transformation from start to finish.</p>
+        </div>
+        <span id="playback-status" class="status-pill">Ready</span>
+      </div>
+
+      <div class="expression-comparison">
+        <section class="expression-side">
+          <div class="side-heading">
+            <span class="side-indicator start-indicator"></span>
+            <h3>Start</h3>
+          </div>
+          <div id="start-tree" class="tree animation-tree"></div>
+        </section>
+
+        <div class="comparison-divider" aria-hidden="true">
+          <span>→</span>
+        </div>
+
+        <section class="expression-side">
+          <div class="side-heading">
+            <span class="side-indicator end-indicator"></span>
+            <h3>Final result</h3>
+          </div>
+          <div id="end-tree" class="tree animation-tree"></div>
+        </section>
+      </div>
+
+      <div class="playback-panel">
+        <div class="playback-rule">
+          <span class="hint">CURRENT TRANSFORMATION</span>
+          <strong id="current-rule">Ready to play</strong>
+          <p id="current-description">Press Play to see how the expression is simplified.</p>
+        </div>
+
+        <div class="playback-progress">
+          <span id="step-counter">Step 0 of 0</span>
+          <div
+            id="progress-track"
+            class="progress-track"
+            role="progressbar"
+            aria-label="Transformation progress"
+            aria-valuemin="0"
+            aria-valuemax="0"
+            aria-valuenow="0"
+          >
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="playback-controls">
+          <button id="previous-step" class="secondary" type="button" disabled>
+            ← Previous
+          </button>
+          <button id="play-button" type="button">
+            ▶ Play
+          </button>
+          <button id="next-step" class="secondary" type="button" disabled>
+            Next →
+          </button>
+
+          <label class="speed-control" for="animation-speed">
+            Speed
+            <select id="animation-speed">
+              <option value="1800">Slow</option>
+              <option value="1000" selected>Normal</option>
+              <option value="450">Fast</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
