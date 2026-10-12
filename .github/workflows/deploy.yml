@@ -1,0 +1,87 @@
+name: Build and Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: railway-production
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install root dependencies
+        run: yarn install --immutable
+
+      - name: Build root project
+        run: yarn build
+
+      - name: Prepare deployment package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p deployment
+
+          # Copy everything from webpage/ to the deployment root.
+          if [ ! -d webpage ]; then
+            echo "Error: webpage/ directory not found."
+            exit 1
+          fi
+
+          cp -a webpage/. deployment/
+
+          # Copy the root project's build output into deployment/dist/.
+          if [ -d dist ]; then
+            mkdir -p deployment/dist
+            cp -a dist/. deployment/dist/
+          else
+            echo "Error: root dist/ directory not found after build."
+            exit 1
+          fi
+
+          # Include Railway configuration when present.
+          for file in Dockerfile railway.json railway.toml nixpacks.toml; do
+            if [ -f "$file" ]; then
+              cp "$file" deployment/
+            fi
+          done
+
+          # Validate the deployment package.
+          if [ ! -f deployment/index.html ]; then
+            echo "Error: deployment/index.html not found."
+            exit 1
+          fi
+
+          echo "Deployment package contents:"
+          find deployment -maxdepth 3 -type f | sort
+
+      - name: Install Railway CLI
+        run: yarn add --global @railway/cli
+
+      - name: Deploy to Railway
+        working-directory: deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --ci --project ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service WebApp

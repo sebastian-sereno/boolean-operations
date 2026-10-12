@@ -1,0 +1,12 @@
+{
+  "author": "Sebastian Sereno",
+  "license": "All Rights Reserved",
+  "main": "./index.js",
+  "name": "@sebastian-sereno/boolean-operations-webpage",
+  "scripts": {
+    "build": "tsc"
+  },
+  "type": "module",
+  "types": "./dist/index.d.js",
+  "version": "1.0.0"
+}
