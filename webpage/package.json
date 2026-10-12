@@ -1,7 +1,7 @@
 {
   "author": "Sebastian Sereno",
   "license": "All Rights Reserved",
-  "main": "./index.js",
+  "main": "./server.js",
   "name": "@sebastian-sereno/boolean-operations-webpage",
   "scripts": {
     "run": "node server.js"
